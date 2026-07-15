@@ -21,6 +21,7 @@ concurrency:
 jobs:
   build-web:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       GODOT_VERSION: 4.3-stable
       TEMPLATE_VERSION: 4.3.stable
@@ -63,6 +64,15 @@ jobs:
           test -f exports/web/index.wasm
           test -f exports/web/index.pck
           touch exports/web/.nojekyll
+          cat > exports/web/build-version.json <<EOF
+          {
+            "commit": "${GITHUB_SHA}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "repository": "${GITHUB_REPOSITORY}",
+            "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          test -s exports/web/build-version.json
           ls -lh exports/web
 
       - name: Upload downloadable browser build
@@ -88,6 +98,7 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: build-web
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
