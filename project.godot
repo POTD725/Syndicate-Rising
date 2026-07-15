@@ -4,13 +4,13 @@ config_version=5
 
 [application]
 config/name="MoonGoons: Syndicate Rising"
-config/version="0.1.0-standalone"
+config/version="0.2.0-lunar-hideout"
 run/main_scene="res://scenes/SyndicateCity.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://assets/syndicate_emblem.svg"
 
 [autoload]
-SyndicateState="*res://scripts/syndicate_state.gd"
+SyndicateState="*res://scripts/syndicate_lunar_state.gd"
 SyndicateAudio="*res://scripts/syndicate_audio.gd"
 
 [display]
