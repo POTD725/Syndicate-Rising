@@ -9,7 +9,7 @@ func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	print("[SYNDICATE RISING] Running gameplay, story, chat, camera, and five-family skin tests...")
+	print("[SYNDICATE RISING] Running gameplay and exact displayed-art tests...")
 	var script_paths: Array[String] = [
 		"res://scripts/syndicate_state.gd",
 		"res://scripts/syndicate_lunar_state.gd",
@@ -47,23 +47,45 @@ func _run() -> void:
 		quit(1)
 		return
 
+	_expect(FileAccess.file_exists("res://assets/concept_atlases/board.part0.b64"), "First half of displayed concept board is packaged")
+	_expect(FileAccess.file_exists("res://assets/concept_atlases/board.part1.b64"), "Second half of displayed concept board is packaged")
 	var skin_names: Array = skins.get("SKIN_NAMES") as Array
-	var item_ids: Array = skins.get("ITEM_IDS") as Array
-	_expect(skin_names.size() == 5, "Five complete skin families exist")
-	_expect(item_ids.size() == 64, "Skin atlas maps sixty-four game item types")
+	_expect(skin_names.size() == 5, "Five displayed-art option columns exist")
+	var first_base_region: Rect2 = Rect2()
+	var board_bounds: Rect2 = Rect2()
 	for skin_index: int in range(5):
 		skins.call("set_skin", skin_index)
 		var atlas_texture: Texture2D = skins.call("atlas") as Texture2D
-		_expect(atlas_texture != null, "Skin %d generates a vector atlas" % (skin_index + 1))
+		_expect(atlas_texture != null, "Displayed board decodes for option %d" % (skin_index + 1))
 		if atlas_texture != null:
-			_expect(atlas_texture.get_size().x >= 1024.0 and atlas_texture.get_size().y >= 1024.0, "Skin %d atlas has all item cells" % (skin_index + 1))
-		_expect(not String(skins.call("skin_name")).is_empty(), "Skin %d has a display name" % (skin_index + 1))
+			var atlas_size: Vector2 = atlas_texture.get_size()
+			_expect(atlas_size.x >= 630.0 and atlas_size.y >= 420.0, "Displayed board keeps usable image resolution")
+			board_bounds = Rect2(Vector2.ZERO, atlas_size)
+		var base_region: Rect2 = skins.call("base_region") as Rect2
+		_expect(_valid_region(base_region, board_bounds), "Moon-base option %d maps to the shown artwork" % (skin_index + 1))
+		_expect(_valid_region(skins.call("ui_frame_region") as Rect2, board_bounds), "UI-frame option %d maps to the shown artwork" % (skin_index + 1))
+		_expect(_valid_region(skins.call("button_region") as Rect2, board_bounds), "Button option %d maps to the shown artwork" % (skin_index + 1))
+		_expect(_valid_region(skins.call("region", "resource_alloy") as Rect2, board_bounds), "Alloy option %d maps to the shown artwork" % (skin_index + 1))
+		_expect(_valid_region(skins.call("region", "resource_helium") as Rect2, board_bounds), "Helium-3 option %d maps to the shown artwork" % (skin_index + 1))
+		_expect(_valid_region(skins.call("region", "resource_cores") as Rect2, board_bounds), "Data Core option %d maps to the shown artwork" % (skin_index + 1))
+		if skin_index == 0:
+			first_base_region = base_region
+		elif skin_index == 1:
+			_expect(base_region.position != first_base_region.position, "ART button changes to a different shown moon base")
+		_expect(not String(skins.call("skin_name")).is_empty(), "Displayed option %d has a name" % (skin_index + 1))
+
 	skins.call("set_skin", 0)
-	_expect((skins.call("region", "room_backroom") as Rect2).size == Vector2(128.0, 128.0), "Room skin region resolves")
-	_expect((skins.call("region", "resource_alloy") as Rect2).size == Vector2(128.0, 128.0), "Resource skin region resolves")
-	_expect((skins.call("region", "defense_sentry") as Rect2).size == Vector2(128.0, 128.0), "Defense skin region resolves")
-	_expect((skins.call("region", "threat_patrol") as Rect2).size == Vector2(128.0, 128.0), "Threat skin region resolves")
-	_expect((skins.call("region", "mission_rescue") as Rect2).size == Vector2(128.0, 128.0), "Mission skin region resolves")
+	var displayed_items: Array[String] = [
+		"room_black_research", "room_weapons_workshop", "room_signal_den", "room_chop_shop", "room_bunks",
+		"threat_patrol", "threat_riot", "threat_survey", "threat_cyber",
+		"defense_jammer", "defense_sentry", "defense_blast_doors", "defense_escape_tunnels",
+		"mission_hidden", "mission_law_hack", "mission_syndicate_cipher", "mission_rescue",
+		"crew_brawler", "crew_techie", "crew_hacker", "crew_gunner", "crew_smuggler"
+	]
+	for item_id: String in displayed_items:
+		_expect(_valid_region(skins.call("region", item_id) as Rect2, board_bounds), "Actual displayed crop resolves: %s" % item_id)
+	for cutscene_index: int in range(5):
+		_expect(_valid_region(skins.call("cutscene_region", cutscene_index) as Rect2, board_bounds), "Displayed cutscene background %d resolves" % (cutscene_index + 1))
 
 	state.call("reset_state")
 	var rooms_value: Variant = state.get("rooms")
@@ -88,7 +110,6 @@ func _run() -> void:
 	state.set("lunar_alloy", 500)
 	state.set("helium3", 500)
 	state.set("data_cores", 500)
-
 	var harvest_result: Dictionary = state.call("start_harvest", "alloy") as Dictionary
 	_expect(bool(harvest_result.get("ok", false)), "Lunar Alloy harvest can launch")
 	var alloy_site: Dictionary = state.call("get_harvest_site", "alloy") as Dictionary
@@ -147,27 +168,7 @@ func _run() -> void:
 		"res://scenes/SyndicateChat.tscn"
 	]
 	for path: String in scene_paths:
-		_expect(load(path) is PackedScene, "Skinned scene parses: %s" % path.get_file())
-
-	var art_paths: Array[String] = [
-		"res://assets/syndicate_emblem.svg",
-		"res://assets/hideout/lunar_surface_panorama.svg",
-		"res://assets/hideout/lunar_hideout_cutaway.svg",
-		"res://assets/hideout/peacekeeper_orbital_station.svg",
-		"res://assets/portraits/nyx_raze.svg",
-		"res://assets/portraits/vox_13.svg",
-		"res://assets/portraits/cinder_quell.svg",
-		"res://assets/portraits/grit_mercer.svg",
-		"res://assets/threats/take_back_response.svg",
-		"res://assets/operations/harvest_sites.svg",
-		"res://assets/operations/hideout_defenses.svg",
-		"res://assets/operations/side_missions.svg",
-		"res://assets/cutscenes/syndicate_origin.svg",
-		"res://assets/cutscenes/ghost_key_network.svg",
-		"res://assets/cutscenes/take_back_dark.svg"
-	]
-	for path: String in art_paths:
-		_expect(load(path) is Texture2D, "Original artwork imports beneath skin layer: %s" % path.get_file())
+		_expect(load(path) is PackedScene, "Exact-art scene parses: %s" % path.get_file())
 
 	state.set("intro_seen", true)
 	state.set("pending_cutscene", "")
@@ -179,11 +180,11 @@ func _run() -> void:
 		root.add_child(city)
 		await process_frame
 		await process_frame
-		_expect(city is Node2D, "Fully skinned lunar hideout instantiates")
+		_expect(city is Node2D, "Lunar hideout with displayed artwork instantiates")
 		_expect(int(city.get("rotation_quadrant")) == 0, "Camera starts upright")
 		var initial_skin: int = int(skins.get("selected_skin"))
 		city.call("_action", "skin")
-		_expect(int(skins.get("selected_skin")) != initial_skin, "Skin button changes the complete visual family")
+		_expect(int(skins.get("selected_skin")) != initial_skin, "ART button changes the displayed concept option")
 		city.call("_action", "rotate")
 		_expect(int(city.get("rotation_quadrant")) == 1, "Rotate button advances the view by 90 degrees")
 		city.call("_action", "zoom_in")
@@ -197,7 +198,7 @@ func _run() -> void:
 		var operations: Node = operations_scene.instantiate()
 		root.add_child(operations)
 		await process_frame
-		_expect(operations is Node2D, "Skinned Operations screen instantiates")
+		_expect(operations is Node2D, "Operations with displayed resources and defenses instantiates")
 		operations.queue_free()
 
 	var chat_scene: PackedScene = load("res://scenes/SyndicateChat.tscn") as PackedScene
@@ -205,14 +206,17 @@ func _run() -> void:
 		var chat_screen: Node = chat_scene.instantiate()
 		root.add_child(chat_screen)
 		await process_frame
-		_expect(chat_screen is Control, "Skinned Galaxy, Alliance, and Private chat instantiates")
+		_expect(chat_screen is Control, "Communications with displayed UI frame instantiates")
 		chat_screen.queue_free()
 
 	if failures == 0:
-		print("SUCCESS: Syndicate Rising gameplay and five complete skin families passed.")
+		print("SUCCESS: Syndicate Rising uses the exact displayed concept-board artwork.")
 	else:
-		push_error("FAILED: %d Syndicate Rising smoke test(s) failed." % failures)
+		push_error("FAILED: %d Syndicate Rising exact-art test(s) failed." % failures)
 	quit(failures)
+
+func _valid_region(region_rect: Rect2, board_bounds: Rect2) -> bool:
+	return region_rect.size.x > 4.0 and region_rect.size.y > 4.0 and board_bounds.encloses(region_rect)
 
 func _expect(condition: bool, label: String) -> void:
 	if condition:
