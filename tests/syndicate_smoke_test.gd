@@ -7,10 +7,10 @@ func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	print("[SYNDICATE RISING] Running lunar hideout smoke tests...")
+	print("[SYNDICATE RISING] Running lunar hideout camera and art tests...")
 	_expect(load("res://scripts/syndicate_state.gd") is Script, "Base campaign state script loads")
 	_expect(load("res://scripts/syndicate_lunar_state.gd") is Script, "Lunar campaign state script loads")
-	_expect(load("res://scripts/syndicate_lunar_city.gd") is Script, "Living lunar hideout script loads")
+	_expect(load("res://scripts/syndicate_lunar_camera_city.gd") is Script, "Camera-controlled lunar hideout script loads")
 	_expect(load("res://scripts/syndicate_audio.gd") is Script, "Generated audio script loads")
 	_expect(load("res://scripts/syndicate_scores.gd") is Script, "Score board script loads")
 	_expect(load("res://scripts/syndicate_raid.gd") is Script, "Tactical raid script loads")
@@ -85,6 +85,9 @@ func _run() -> void:
 
 	var art_paths: Array[String] = [
 		"res://assets/syndicate_emblem.svg",
+		"res://assets/hideout/lunar_surface_panorama.svg",
+		"res://assets/hideout/lunar_hideout_cutaway.svg",
+		"res://assets/hideout/peacekeeper_orbital_station.svg",
 		"res://assets/portraits/nyx_raze.svg",
 		"res://assets/portraits/vox_13.svg",
 		"res://assets/portraits/cinder_quell.svg",
@@ -105,11 +108,18 @@ func _run() -> void:
 		root.add_child(city)
 		await process_frame
 		await process_frame
-		_expect(city is Node2D, "Living lunar hideout instantiates")
+		_expect(city is Node2D, "Camera-controlled lunar hideout instantiates")
+		_expect(int(city.get("rotation_quadrant")) == 0, "Camera starts upright")
+		city.call("_action", "rotate")
+		_expect(int(city.get("rotation_quadrant")) == 1, "Rotate button advances the view by 90 degrees")
+		city.call("_action", "zoom_in")
+		_expect(float(city.get("target_camera_zoom")) > 0.88, "Zoom controls change the camera scale")
+		city.call("_action", "center")
+		_expect((city.get("target_camera_offset") as Vector2).is_equal_approx(Vector2.ZERO), "Center button resets camera pan")
 		city.queue_free()
 
 	if failures == 0:
-		print("SUCCESS: Syndicate Rising lunar hideout smoke tests passed.")
+		print("SUCCESS: Syndicate Rising camera and art tests passed.")
 	else:
 		push_error("FAILED: %d Syndicate Rising smoke test(s) failed." % failures)
 	quit(failures)
