@@ -7,10 +7,11 @@ func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	print("[SYNDICATE RISING] Running standalone smoke tests...")
-	_expect(load("res://scripts/syndicate_state.gd") is Script, "Campaign state script loads")
+	print("[SYNDICATE RISING] Running lunar hideout smoke tests...")
+	_expect(load("res://scripts/syndicate_state.gd") is Script, "Base campaign state script loads")
+	_expect(load("res://scripts/syndicate_lunar_state.gd") is Script, "Lunar campaign state script loads")
+	_expect(load("res://scripts/syndicate_lunar_city.gd") is Script, "Living lunar hideout script loads")
 	_expect(load("res://scripts/syndicate_audio.gd") is Script, "Generated audio script loads")
-	_expect(load("res://scripts/syndicate_city.gd") is Script, "Portrait city script loads")
 	_expect(load("res://scripts/syndicate_scores.gd") is Script, "Score board script loads")
 	_expect(load("res://scripts/syndicate_raid.gd") is Script, "Tactical raid script loads")
 	_expect(load("res://scripts/syndicate_cutscene.gd") is Script, "Cutscene script loads")
@@ -24,19 +25,41 @@ func _run() -> void:
 	state.call("reset_state")
 	var rooms_value: Variant = state.get("rooms")
 	var crew_value: Variant = state.get("crew")
-	_expect(rooms_value is Array and (rooms_value as Array).size() == 8, "Eight criminal buildings exist")
+	_expect(rooms_value is Array and (rooms_value as Array).size() == 12, "Twelve connected criminal hideout rooms exist")
 	_expect(crew_value is Array and (crew_value as Array).size() == 4, "Four starter crew members exist")
 	_expect(String(state.get("pending_cutscene")) == "prologue", "New campaign starts with the prologue")
+	_expect(not (state.call("get_room", "black_research") as Dictionary).is_empty(), "Black Research Lab exists")
+	_expect(not (state.call("get_room", "weapons_workshop") as Dictionary).is_empty(), "Weapons Workshop exists")
+	_expect(not (state.call("get_room", "signal_den") as Dictionary).is_empty(), "Hacker Training Den exists")
+	_expect(not (state.call("get_room", "enforcer_gym") as Dictionary).is_empty(), "Enforcer Training Room exists")
+	_expect(not (state.call("get_room", "sharpshooter_range") as Dictionary).is_empty(), "Sharpshooter Range exists")
 
 	state.set("credits", 5000)
+	state.set("intel", 100)
+	state.set("contraband", 100)
 	var repair: Dictionary = state.call("repair_room", "chop_shop") as Dictionary
-	_expect(bool(repair.get("ok", false)), "Damaged building can enter the rebuild queue")
-	var chop_shop: Dictionary = state.call("get_room", "chop_shop") as Dictionary
-	chop_shop["repaired"] = true
-	chop_shop["repair_end"] = 0
+	_expect(bool(repair.get("ok", false)), "Damaged Runner Garage can enter the rebuild queue")
+	var runner_garage: Dictionary = state.call("get_room", "chop_shop") as Dictionary
+	runner_garage["repaired"] = true
+	runner_garage["repair_end"] = 0
 	var upgrade: Dictionary = state.call("upgrade_room", "chop_shop") as Dictionary
-	_expect(bool(upgrade.get("ok", false)), "Rebuilt building can be upgraded")
-	_expect(int(chop_shop.get("level", 1)) == 2, "Upgrade raises building level")
+	_expect(bool(upgrade.get("ok", false)), "Rebuilt room can be upgraded")
+	_expect(int(runner_garage.get("level", 1)) == 2, "Upgrade raises room level")
+
+	var signal_den: Dictionary = state.call("get_room", "signal_den") as Dictionary
+	var research_lab: Dictionary = state.call("get_room", "black_research") as Dictionary
+	signal_den["repaired"] = true
+	research_lab["repaired"] = true
+	var research_result: Dictionary = state.call("run_room_operation", "black_research") as Dictionary
+	_expect(bool(research_result.get("ok", false)), "Black Research starts through the room operation system")
+	_expect(int(state.get("black_tech_end")) > 0, "Research timer is active")
+
+	var workshop: Dictionary = state.call("get_room", "weapons_workshop") as Dictionary
+	workshop["repaired"] = true
+	var old_power: int = int((crew_value as Array)[0].get("power", 0))
+	var weapons_result: Dictionary = state.call("run_room_operation", "weapons_workshop") as Dictionary
+	_expect(bool(weapons_result.get("ok", false)), "Weapons Workshop crafts crew equipment")
+	_expect(int((crew_value as Array)[0].get("power", 0)) > old_power, "Crafted equipment increases crew power")
 
 	state.set("next_job_at", 0)
 	state.call("tick")
@@ -62,14 +85,6 @@ func _run() -> void:
 
 	var art_paths: Array[String] = [
 		"res://assets/syndicate_emblem.svg",
-		"res://assets/buildings/backroom_command.svg",
-		"res://assets/buildings/chop_shop.svg",
-		"res://assets/buildings/black_market.svg",
-		"res://assets/buildings/safehouse_bunks.svg",
-		"res://assets/buildings/street_clinic.svg",
-		"res://assets/buildings/boss_office.svg",
-		"res://assets/buildings/signal_den.svg",
-		"res://assets/buildings/smuggler_tunnel.svg",
 		"res://assets/portraits/nyx_raze.svg",
 		"res://assets/portraits/vox_13.svg",
 		"res://assets/portraits/cinder_quell.svg",
@@ -90,11 +105,11 @@ func _run() -> void:
 		root.add_child(city)
 		await process_frame
 		await process_frame
-		_expect(city is Node2D, "Portrait city instantiates")
+		_expect(city is Node2D, "Living lunar hideout instantiates")
 		city.queue_free()
 
 	if failures == 0:
-		print("SUCCESS: Syndicate Rising standalone smoke tests passed.")
+		print("SUCCESS: Syndicate Rising lunar hideout smoke tests passed.")
 	else:
 		push_error("FAILED: %d Syndicate Rising smoke test(s) failed." % failures)
 	quit(failures)
