@@ -1,0 +1,55 @@
+name: Syndicate Rising Browser Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: 4.3-stable
+      TEMPLATE_VERSION: 4.3.stable
+      GODOT_BINARY: Godot_v4.3-stable_linux.x86_64
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot and templates
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .ci/godot
+          curl --fail --location --retry 3 \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip" \
+            --output .ci/godot/godot.zip
+          unzip -q .ci/godot/godot.zip -d .ci/godot
+          chmod +x ".ci/godot/${GODOT_BINARY}"
+          curl --fail --location --retry 3 \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz" \
+            --output .ci/godot/templates.tpz
+          unzip -q .ci/godot/templates.tpz -d .ci/godot/templates
+          mkdir -p "$HOME/.local/share/godot/export_templates/${TEMPLATE_VERSION}"
+          cp .ci/godot/templates/templates/* "$HOME/.local/share/godot/export_templates/${TEMPLATE_VERSION}/"
+      - name: Verify project
+        run: |
+          chmod +x compile_and_test.sh
+          GODOT_BIN="${GITHUB_WORKSPACE}/.ci/godot/${GODOT_BINARY}" ./compile_and_test.sh
+      - name: Export browser build
+        run: |
+          mkdir -p exports/web
+          ".ci/godot/${GODOT_BINARY}" --headless --path . --export-release Web exports/web/index.html
+          test -f exports/web/index.html
+          test -f exports/web/index.wasm
+          test -f exports/web/index.pck
+          touch exports/web/.nojekyll
+      - name: Upload browser build
+        uses: actions/upload-artifact@v4
+        with:
+          name: MoonGoons-Syndicate-Rising-Web
+          path: exports/web/
+          retention-days: 14

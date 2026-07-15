@@ -1,0 +1,39 @@
+name: Syndicate Rising Godot Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.3
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .ci/godot
+          curl --fail --location --retry 3 \
+            https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip \
+            --output .ci/godot/godot.zip
+          unzip -q .ci/godot/godot.zip -d .ci/godot
+          chmod +x .ci/godot/Godot_v4.3-stable_linux.x86_64
+          echo "GODOT_BIN=${GITHUB_WORKSPACE}/.ci/godot/Godot_v4.3-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - name: Import and test standalone game
+        run: |
+          chmod +x compile_and_test.sh
+          ./compile_and_test.sh
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: syndicate-rising-failure-logs
+          path: logs/
+          retention-days: 14
