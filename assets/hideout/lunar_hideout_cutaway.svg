@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1080" viewBox="0 0 1400 1080">
+<defs>
+  <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#2b3340"/><stop offset="1" stop-color="#141b25"/></linearGradient>
+  <linearGradient id="room" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#112132"/><stop offset="1" stop-color="#1f3447"/></linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#425268"/><stop offset="1" stop-color="#202a38"/></linearGradient>
+  <linearGradient id="shaft" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#152334"/><stop offset=".5" stop-color="#274157"/><stop offset="1" stop-color="#152334"/></linearGradient>
+  <filter id="cyanGlow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="pinkGlow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <pattern id="hazard" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="24" fill="#2b3440"/><rect x="12" width="12" height="24" fill="#d9a33d"/></pattern>
+  <g id="terminal"><rect width="94" height="64" rx="7" fill="#08121d" stroke="#6c879d" stroke-width="4"/><rect x="8" y="8" width="78" height="39" rx="4" fill="#16364c"/><path d="M17 19h55M17 29h41M17 39h25" stroke="#64e9ff" stroke-width="4"/><path d="M47 64v17M28 81h38" stroke="#71869c" stroke-width="5"/></g>
+  <g id="crate"><rect width="72" height="52" rx="5" fill="#6d4d39" stroke="#aa8060" stroke-width="4"/><path d="M8 8l56 36M64 8L8 44" stroke="#d1a679" stroke-width="4" opacity=".72"/><rect x="27" y="17" width="18" height="18" fill="#1d2b39"/></g>
+  <g id="door"><rect width="35" height="88" rx="5" fill="#26394b" stroke="#6e8499" stroke-width="4"/><path d="M9 10v67" stroke="#66eaff" stroke-width="4"/><circle cx="26" cy="44" r="4" fill="#ffd166"/></g>
+  <g id="light"><rect width="104" height="10" rx="5" fill="#bdf7ff" filter="url(#cyanGlow)"/></g>
+  <g id="roomShell">
+    <rect width="610" height="150" rx="18" fill="url(#room)" stroke="#73869c" stroke-width="5"/>
+    <rect x="12" y="12" width="586" height="105" rx="12" fill="#0e1a27" stroke="#2e4a60" stroke-width="3"/>
+    <rect x="12" y="116" width="586" height="22" fill="url(#floor)"/>
+    <rect x="36" y="19" width="538" height="8" rx="4" fill="#8eefff" opacity=".42"/>
+    <g opacity=".38" stroke="#608097" stroke-width="3"><path d="M94 29v84M196 29v84M298 29v84M400 29v84M502 29v84"/></g>
+  </g>
+</defs>
+<rect width="1400" height="1080" fill="url(#rock)"/>
+<g opacity=".34" fill="#4a5666"><circle cx="78" cy="90" r="52"/><circle cx="1320" cy="132" r="67"/><circle cx="111" cy="943" r="83"/><circle cx="1272" cy="923" r="71"/><circle cx="349" cy="42" r="31"/><circle cx="1052" cy="55" r="38"/></g>
+<path d="M0 42C170 88 248 9 391 48s232 7 339 30 232-2 340-28 206 7 330 21v1009H0z" fill="#151d28" opacity=".72"/>
+<rect x="650" y="28" width="100" height="1024" rx="30" fill="url(#shaft)" stroke="#71869b" stroke-width="6"/>
+<path d="M673 42v988M727 42v988" stroke="#8ca0b2" stroke-width="4" opacity=".6"/>
+<g fill="#6deaff" opacity=".7" filter="url(#cyanGlow)"><circle cx="700" cy="97" r="8"/><circle cx="700" cy="257" r="8"/><circle cx="700" cy="417" r="8"/><circle cx="700" cy="577" r="8"/><circle cx="700" cy="737" r="8"/><circle cx="700" cy="897" r="8"/></g>
+<g transform="translate(22 35)">
+  <use href="#roomShell"/>
+  <use href="#terminal" x="56" y="42"/><use href="#terminal" x="458" y="42"/>
+  <circle cx="305" cy="72" r="49" fill="#102332" stroke="#61eaff" stroke-width="6"/><circle cx="305" cy="72" r="33" fill="none" stroke="#ffca6b" stroke-width="4"/><path d="M272 72h66M305 39v66" stroke="#72eaff" stroke-width="4"/>
+  <path d="M279 72l26-17 25 17-25 18z" fill="#ff6f9f" opacity=".72" filter="url(#pinkGlow)"/>
+  <use href="#door" x="579" y="31"/>
+</g>
+<g transform="translate(768 35)">
+  <use href="#roomShell"/>
+  <g transform="translate(68 33)"><rect width="86" height="80" rx="16" fill="#112b34" stroke="#68efd4" stroke-width="5"/><circle cx="43" cy="41" r="27" fill="#62e8d1" opacity=".24"/><circle cx="43" cy="41" r="13" fill="#d7fff6" filter="url(#cyanGlow)"/></g>
+  <g transform="translate(255 33)"><rect width="86" height="80" rx="16" fill="#112b34" stroke="#68efd4" stroke-width="5"/><path d="M43 18c23 0 29 46 0 46S20 18 43 18z" fill="#9ffff1" opacity=".75"/><circle cx="43" cy="42" r="7" fill="#ffffff"/></g>
+  <g transform="translate(442 33)"><rect width="86" height="80" rx="16" fill="#112b34" stroke="#68efd4" stroke-width="5"/><path d="M20 58L43 22l23 36z" fill="#6fe9ff" opacity=".62"/><circle cx="43" cy="47" r="6" fill="#ffd76a"/></g>
+  <use href="#door" x="-4" y="31"/>
+</g>
+<g transform="translate(22 205)">
+  <use href="#roomShell"/>
+  <g stroke="#e6edf6" stroke-width="8" stroke-linecap="round"><path d="M58 56h150"/><path d="M70 77h126"/><path d="M94 98h80"/></g>
+  <g transform="translate(263 34)"><rect width="118" height="80" rx="10" fill="#3d272b" stroke="#d07c4d" stroke-width="5"/><circle cx="59" cy="40" r="26" fill="#ff7c42" opacity=".67" filter="url(#pinkGlow)"/><path d="M30 40h58M59 15v50" stroke="#ffd09a" stroke-width="5"/></g>
+  <g transform="translate(427 40)"><rect width="115" height="61" rx="8" fill="#1b2a38" stroke="#66889f" stroke-width="4"/><path d="M15 18h85M15 31h66M15 44h43" stroke="#72eaff" stroke-width="4"/></g>
+  <use href="#door" x="579" y="31"/>
+</g>
+<g transform="translate(768 205)">
+  <use href="#roomShell"/>
+  <use href="#terminal" x="53" y="38"/><use href="#terminal" x="258" y="38"/><use href="#terminal" x="463" y="38"/>
+  <g fill="#7dffd9" font-family="monospace" font-size="20" opacity=".82"><text x="74" y="113">0110</text><text x="279" y="113">ROOT</text><text x="484" y="113">PKR</text></g>
+  <path d="M150 55C210 25 250 110 314 69S420 35 458 74" fill="none" stroke="#ff6fb1" stroke-width="5" opacity=".72" filter="url(#pinkGlow)"/>
+  <use href="#door" x="-4" y="31"/>
+</g>
+<g transform="translate(22 375)">
+  <use href="#roomShell"/>
+  <g transform="translate(70 35)"><path d="M20 10v74" stroke="#b8c7d5" stroke-width="9"/><ellipse cx="20" cy="75" rx="28" ry="16" fill="#7a2638"/><path d="M110 57h170" stroke="#dbe2ea" stroke-width="13"/><circle cx="100" cy="57" r="24" fill="#324456"/><circle cx="290" cy="57" r="24" fill="#324456"/></g>
+  <g transform="translate(420 30)"><rect width="118" height="85" rx="12" fill="#182a38" stroke="#718ca2" stroke-width="4"/><path d="M18 18h82M18 34h48M18 50h68" stroke="#ffca6e" stroke-width="5"/><path d="M24 72h70" stroke="#67e8ff" stroke-width="5"/></g>
+  <use href="#door" x="579" y="31"/>
+</g>
+<g transform="translate(768 375)">
+  <use href="#roomShell"/>
+  <g transform="translate(70 40)">
+    <g><circle cx="35" cy="35" r="29" fill="#f2efe9"/><circle cx="35" cy="35" r="19" fill="#c83d52"/><circle cx="35" cy="35" r="8" fill="#fff6c8"/></g>
+    <g transform="translate(160)"><circle cx="35" cy="35" r="29" fill="#f2efe9"/><circle cx="35" cy="35" r="19" fill="#c83d52"/><circle cx="35" cy="35" r="8" fill="#fff6c8"/></g>
+    <g transform="translate(320)"><circle cx="35" cy="35" r="29" fill="#f2efe9"/><circle cx="35" cy="35" r="19" fill="#c83d52"/><circle cx="35" cy="35" r="8" fill="#fff6c8"/></g>
+  </g>
+  <path d="M65 114h485" stroke="#91a6b7" stroke-width="7"/><path d="M86 102h438" stroke="#5eeaff" stroke-width="3"/>
+  <use href="#door" x="-4" y="31"/>
+</g>
+<g transform="translate(22 545)">
+  <use href="#roomShell"/>
+  <g transform="translate(57 38)"><path d="M0 53h238l-28 45H28z" fill="#1b2d3f" stroke="#66879e" stroke-width="5"/><path d="M52 53L84 10h108l39 43" fill="#3c566b" stroke="#8ca8bc" stroke-width="5"/><rect x="101" y="26" width="73" height="18" rx="5" fill="#ff6fa3" opacity=".68"/><circle cx="58" cy="99" r="24" fill="#0b1119" stroke="#7e91a2" stroke-width="6"/><circle cx="190" cy="99" r="24" fill="#0b1119" stroke="#7e91a2" stroke-width="6"/></g>
+  <g transform="translate(374 36)"><rect width="156" height="85" rx="12" fill="#192a39" stroke="#6f899d" stroke-width="4"/><path d="M16 20h124M16 40h83M16 60h105" stroke="#69eaff" stroke-width="5"/><circle cx="130" cy="61" r="10" fill="#ffcf68"/></g>
+  <use href="#door" x="579" y="31"/>
+</g>
+<g transform="translate(768 545)">
+  <use href="#roomShell"/>
+  <g transform="translate(58 38)"><rect width="245" height="74" rx="12" fill="#d7e5ea" stroke="#8ea8b8" stroke-width="5"/><rect x="95" y="11" width="55" height="52" fill="#62e6d1"/><rect x="72" y="27" width="101" height="20" fill="#62e6d1"/><circle cx="32" cy="37" r="18" fill="#70879a"/></g>
+  <use href="#terminal" x="407" y="39"/>
+  <path d="M360 24v87" stroke="#ff6d91" stroke-width="5" opacity=".65"/><circle cx="360" cy="63" r="18" fill="none" stroke="#ff6d91" stroke-width="4"/>
+  <use href="#door" x="-4" y="31"/>
+</g>
+<g transform="translate(22 715)">
+  <use href="#roomShell"/>
+  <g transform="translate(40 39)">
+    <g><rect width="128" height="28" rx="7" fill="#566a7b"/><rect y="45" width="128" height="28" rx="7" fill="#566a7b"/><circle cx="18" cy="14" r="8" fill="#ffd0a0"/><circle cx="18" cy="59" r="8" fill="#ffd0a0"/></g>
+    <g transform="translate(190)"><rect width="128" height="28" rx="7" fill="#566a7b"/><rect y="45" width="128" height="28" rx="7" fill="#566a7b"/><circle cx="18" cy="14" r="8" fill="#ffd0a0"/><circle cx="18" cy="59" r="8" fill="#ffd0a0"/></g>
+    <g transform="translate(380)"><rect width="128" height="28" rx="7" fill="#566a7b"/><rect y="45" width="128" height="28" rx="7" fill="#566a7b"/><circle cx="18" cy="14" r="8" fill="#ffd0a0"/><circle cx="18" cy="59" r="8" fill="#ffd0a0"/></g>
+  </g>
+  <use href="#door" x="579" y="31"/>
+</g>
+<g transform="translate(768 715)">
+  <use href="#roomShell"/>
+  <g transform="translate(44 37)"><use href="#crate"/><use href="#crate" x="92"/><use href="#crate" x="184"/><use href="#crate" x="276"/><use href="#crate" x="368"/></g>
+  <g transform="translate(90 102)"><rect width="430" height="17" rx="8" fill="#1e2f3d"/><path d="M15 8h400" stroke="#ffca6d" stroke-width="4" stroke-dasharray="18 12"/></g>
+  <use href="#door" x="-4" y="31"/>
+</g>
+<g transform="translate(22 885)">
+  <use href="#roomShell"/>
+  <path d="M45 118Q305-40 565 118" fill="#142638" stroke="#7f96aa" stroke-width="10"/>
+  <path d="M90 118Q305 2 520 118" fill="#0d1a27" stroke="#5ee8ff" stroke-width="4" opacity=".62"/>
+  <path d="M133 100h344" stroke="#ff6e9f" stroke-width="5" opacity=".48"/>
+  <g transform="translate(256 54)"><path d="M-68 28h136l-15 32H-53z" fill="#274156" stroke="#7fa2b8" stroke-width="4"/><path d="M-40 28l23-26h59l26 26" fill="#4f6677" stroke="#91a8b9" stroke-width="4"/><circle cx="-35" cy="61" r="11" fill="#0b1118"/><circle cx="35" cy="61" r="11" fill="#0b1118"/></g>
+  <use href="#door" x="579" y="31"/>
+</g>
+<g transform="translate(768 885)">
+  <use href="#roomShell"/>
+  <rect x="130" y="68" width="350" height="54" rx="10" fill="#4a3041" stroke="#a66a87" stroke-width="5"/>
+  <circle cx="305" cy="43" r="35" fill="#e0bd68" stroke="#fff1a8" stroke-width="5"/><path d="M305 16l18 14v25l-18 14-18-14V30z" fill="#14283a"/><path d="M305 25v34M294 36h22M294 49h22" stroke="#69eaff" stroke-width="4"/>
+  <rect x="58" y="36" width="70" height="79" rx="12" fill="#1a3043" stroke="#6089a4" stroke-width="4"/><rect x="482" y="36" width="70" height="79" rx="12" fill="#1a3043" stroke="#6089a4" stroke-width="4"/>
+  <circle cx="93" cy="75" r="14" fill="#ff6c96" opacity=".54"/><circle cx="517" cy="75" r="14" fill="#65e9ff" opacity=".54"/>
+  <use href="#door" x="-4" y="31"/>
+</g>
+<g transform="translate(662 980)"><rect width="76" height="58" rx="18" fill="#102436" stroke="#75eaff" stroke-width="5"/><circle cx="38" cy="29" r="20" fill="#1d5870"/><circle cx="38" cy="29" r="10" fill="#bdf8ff" filter="url(#cyanGlow)"/><path d="M38 8v42M17 29h42" stroke="#71eaff" stroke-width="3"/></g>
+<g opacity=".46" fill="url(#hazard)"><rect x="645" y="147" width="110" height="14"/><rect x="645" y="317" width="110" height="14"/><rect x="645" y="487" width="110" height="14"/><rect x="645" y="657" width="110" height="14"/><rect x="645" y="827" width="110" height="14"/></g>
+</svg>
