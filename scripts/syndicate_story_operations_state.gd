@@ -99,5 +99,9 @@ func load_game() -> Dictionary:
 				crew_trust = int(data.get("crew_trust", 0))
 				pending_attack_cutscene = String(data.get("pending_attack_cutscene", ""))
 				attack_cutscenes_seen = int(data.get("attack_cutscenes_seen", 0))
+	if prologue_choice.is_empty():
+		intro_seen = false
+		pending_cutscene = "prologue"
+		last_event = "ORIGIN REQUIRED // Choose how the Syndicate survived the first Peacekeeper raid."
 	state_changed.emit()
 	return result
