@@ -101,13 +101,20 @@ func _draw_inspector() -> void:
 
 func _draw_navigation() -> void:
 	draw_rect(Rect2(0.0, 1160.0, VIEW.x, 120.0), SyndicateSkins.dark(), true)
-	_draw_nav_button(button_rects["hideout"] as Rect2, "HIDEOUT", "BASE", selected_room == "backroom", "hideout")
-	_draw_nav_button(button_rects["scores"] as Rect2, "SCORES", "MISSIONS", false, "score")
-	_draw_nav_button(button_rects["operations"] as Rect2, "OPERATIONS", "HARVEST", false, "operations")
-	_draw_nav_button(button_rects["chat"] as Rect2, "CHAT", "GALAXY", false, "chat_galaxy")
-	_draw_nav_button(button_rects["save"] as Rect2, "SAVE", "PROFILE", false, "save")
+	_draw_nav_button(button_rects["hideout"] as Rect2, "HIDEOUT", "BASE", selected_room == "backroom")
+	_draw_nav_button(button_rects["scores"] as Rect2, "SCORES", "MISSIONS", false)
+	_draw_nav_button(button_rects["operations"] as Rect2, "OPERATIONS", "HARVEST", false)
+	_draw_nav_button(button_rects["chat"] as Rect2, "CHAT", "GALAXY", false)
+	_draw_nav_button(button_rects["save"] as Rect2, "SAVE", "PROFILE", false)
 
-func _draw_nav_button(rect: Rect2, title: String, subtitle: String, active: bool, item_id: String = "skull") -> void:
+func _draw_nav_button(rect: Rect2, title: String, subtitle: String, active: bool) -> void:
+	var item_id: String = "skull"
+	match title:
+		"HIDEOUT": item_id = "hideout"
+		"SCORES": item_id = "score"
+		"OPERATIONS": item_id = "operations"
+		"CHAT": item_id = "chat_galaxy"
+		"SAVE": item_id = "save"
 	draw_style_box(SyndicateSkins.style_box(active, 10), rect)
 	draw_texture_rect_region(skin_atlas, Rect2(rect.position + Vector2(rect.size.x * 0.5 - 18.0, 7.0), Vector2(36.0, 36.0)), SyndicateSkins.region(item_id))
 	draw_string(ThemeDB.fallback_font, rect.position + Vector2(4.0, 63.0), title, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 8.0, 11, SyndicateSkins.text())
