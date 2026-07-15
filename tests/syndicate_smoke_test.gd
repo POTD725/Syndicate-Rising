@@ -3,38 +3,67 @@ extends SceneTree
 var failures: int = 0
 var state: Node
 var chat: Node
+var skins: Node
 
 func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	print("[SYNDICATE RISING] Running operations, story, chat, camera, and art tests...")
+	print("[SYNDICATE RISING] Running gameplay, story, chat, camera, and five-family skin tests...")
 	var script_paths: Array[String] = [
 		"res://scripts/syndicate_state.gd",
 		"res://scripts/syndicate_lunar_state.gd",
 		"res://scripts/syndicate_operations_state.gd",
 		"res://scripts/syndicate_story_operations_state.gd",
+		"res://scripts/syndicate_skin_state.gd",
 		"res://scripts/syndicate_lunar_camera_city.gd",
 		"res://scripts/syndicate_feature_city.gd",
+		"res://scripts/syndicate_skinned_city.gd",
 		"res://scripts/syndicate_operations.gd",
+		"res://scripts/syndicate_skinned_operations.gd",
 		"res://scripts/syndicate_chat_state.gd",
 		"res://scripts/syndicate_chat.gd",
+		"res://scripts/syndicate_skinned_chat.gd",
 		"res://scripts/syndicate_interactive_cutscene.gd",
+		"res://scripts/syndicate_skinned_cutscene.gd",
 		"res://scripts/syndicate_attack_cutscene.gd",
+		"res://scripts/syndicate_skinned_attack_cutscene.gd",
 		"res://scripts/syndicate_audio.gd",
 		"res://scripts/syndicate_scores.gd",
-		"res://scripts/syndicate_raid.gd"
+		"res://scripts/syndicate_skinned_scores.gd",
+		"res://scripts/syndicate_raid.gd",
+		"res://scripts/syndicate_skinned_raid.gd"
 	]
 	for path: String in script_paths:
 		_expect(load(path) is Script, "Script loads: %s" % path.get_file())
 
 	state = root.get_node_or_null("SyndicateState")
 	chat = root.get_node_or_null("SyndicateChat")
+	skins = root.get_node_or_null("SyndicateSkins")
 	_expect(state != null, "SyndicateState autoload exists")
 	_expect(chat != null, "SyndicateChat autoload exists")
-	if state == null or chat == null:
+	_expect(skins != null, "SyndicateSkins autoload exists")
+	if state == null or chat == null or skins == null:
 		quit(1)
 		return
+
+	var skin_names: Array = skins.get("SKIN_NAMES") as Array
+	var item_ids: Array = skins.get("ITEM_IDS") as Array
+	_expect(skin_names.size() == 5, "Five complete skin families exist")
+	_expect(item_ids.size() == 64, "Skin atlas maps sixty-four game item types")
+	for skin_index: int in range(5):
+		skins.call("set_skin", skin_index)
+		var atlas_texture: Texture2D = skins.call("atlas") as Texture2D
+		_expect(atlas_texture != null, "Skin %d generates a vector atlas" % (skin_index + 1))
+		if atlas_texture != null:
+			_expect(atlas_texture.get_size().x >= 1024.0 and atlas_texture.get_size().y >= 1024.0, "Skin %d atlas has all item cells" % (skin_index + 1))
+		_expect(not String(skins.call("skin_name")).is_empty(), "Skin %d has a display name" % (skin_index + 1))
+	skins.call("set_skin", 0)
+	_expect((skins.call("region", "room_backroom") as Rect2).size == Vector2(128.0, 128.0), "Room skin region resolves")
+	_expect((skins.call("region", "resource_alloy") as Rect2).size == Vector2(128.0, 128.0), "Resource skin region resolves")
+	_expect((skins.call("region", "defense_sentry") as Rect2).size == Vector2(128.0, 128.0), "Defense skin region resolves")
+	_expect((skins.call("region", "threat_patrol") as Rect2).size == Vector2(128.0, 128.0), "Threat skin region resolves")
+	_expect((skins.call("region", "mission_rescue") as Rect2).size == Vector2(128.0, 128.0), "Mission skin region resolves")
 
 	state.call("reset_state")
 	var rooms_value: Variant = state.get("rooms")
@@ -118,7 +147,7 @@ func _run() -> void:
 		"res://scenes/SyndicateChat.tscn"
 	]
 	for path: String in scene_paths:
-		_expect(load(path) is PackedScene, "Scene parses: %s" % path.get_file())
+		_expect(load(path) is PackedScene, "Skinned scene parses: %s" % path.get_file())
 
 	var art_paths: Array[String] = [
 		"res://assets/syndicate_emblem.svg",
@@ -138,7 +167,7 @@ func _run() -> void:
 		"res://assets/cutscenes/take_back_dark.svg"
 	]
 	for path: String in art_paths:
-		_expect(load(path) is Texture2D, "Original artwork imports: %s" % path.get_file())
+		_expect(load(path) is Texture2D, "Original artwork imports beneath skin layer: %s" % path.get_file())
 
 	state.set("intro_seen", true)
 	state.set("pending_cutscene", "")
@@ -150,8 +179,11 @@ func _run() -> void:
 		root.add_child(city)
 		await process_frame
 		await process_frame
-		_expect(city is Node2D, "Feature-complete lunar hideout instantiates")
+		_expect(city is Node2D, "Fully skinned lunar hideout instantiates")
 		_expect(int(city.get("rotation_quadrant")) == 0, "Camera starts upright")
+		var initial_skin: int = int(skins.get("selected_skin"))
+		city.call("_action", "skin")
+		_expect(int(skins.get("selected_skin")) != initial_skin, "Skin button changes the complete visual family")
 		city.call("_action", "rotate")
 		_expect(int(city.get("rotation_quadrant")) == 1, "Rotate button advances the view by 90 degrees")
 		city.call("_action", "zoom_in")
@@ -165,7 +197,7 @@ func _run() -> void:
 		var operations: Node = operations_scene.instantiate()
 		root.add_child(operations)
 		await process_frame
-		_expect(operations is Node2D, "Operations screen instantiates")
+		_expect(operations is Node2D, "Skinned Operations screen instantiates")
 		operations.queue_free()
 
 	var chat_scene: PackedScene = load("res://scenes/SyndicateChat.tscn") as PackedScene
@@ -173,11 +205,11 @@ func _run() -> void:
 		var chat_screen: Node = chat_scene.instantiate()
 		root.add_child(chat_screen)
 		await process_frame
-		_expect(chat_screen is Control, "Galaxy, Alliance, and Private chat screen instantiates")
+		_expect(chat_screen is Control, "Skinned Galaxy, Alliance, and Private chat instantiates")
 		chat_screen.queue_free()
 
 	if failures == 0:
-		print("SUCCESS: Syndicate Rising operations, story, chat, camera, and art tests passed.")
+		print("SUCCESS: Syndicate Rising gameplay and five complete skin families passed.")
 	else:
 		push_error("FAILED: %d Syndicate Rising smoke test(s) failed." % failures)
 	quit(failures)
