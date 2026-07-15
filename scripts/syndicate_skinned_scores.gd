@@ -1,5 +1,5 @@
 extends "res://scripts/syndicate_scores.gd"
-## Skins the score board, mission cards, crew roles, and launch controls.
+## Uses the exact displayed concept-board mission, crew, UI-frame, and launch-button artwork.
 
 var skin_atlas: Texture2D
 
@@ -19,10 +19,13 @@ func _draw() -> void:
 		var star: Color = SyndicateSkins.accent()
 		star.a = 0.13
 		draw_circle(Vector2(fmod(float(index * 83 + 17), VIEW.x), fmod(float(index * 47 + 31), VIEW.y)), 1.0, star)
-	draw_rect(Rect2(0.0, 0.0, 720.0, 126.0), SyndicateSkins.panel(), true)
+	draw_texture_rect_region(skin_atlas, Rect2(0.0, 0.0, 720.0, 126.0), SyndicateSkins.ui_frame_region())
+	var header_veil: Color = SyndicateSkins.dark()
+	header_veil.a = 0.68
+	draw_rect(Rect2(0.0, 0.0, 720.0, 126.0), header_veil, true)
 	draw_texture_rect_region(skin_atlas, Rect2(610.0, 20.0, 82.0, 82.0), SyndicateSkins.region("score"))
 	draw_string(ThemeDB.fallback_font, Vector2(24.0, 48.0), "SYNDICATE SCORE BOARD", HORIZONTAL_ALIGNMENT_LEFT, 570.0, 26, SyndicateSkins.text())
-	draw_string(ThemeDB.fallback_font, Vector2(24.0, 82.0), "CHAPTER %d • HEAT %d • NOTORIETY %d • %s" % [SyndicateState.story_chapter, SyndicateState.heat, SyndicateState.notoriety, SyndicateSkins.skin_name().to_upper()], HORIZONTAL_ALIGNMENT_LEFT, 580.0, 11, SyndicateSkins.secondary())
+	draw_string(ThemeDB.fallback_font, Vector2(24.0, 82.0), "CHAPTER %d • HEAT %d • NOTORIETY %d • ACTUAL ART" % [SyndicateState.story_chapter, SyndicateState.heat, SyndicateState.notoriety], HORIZONTAL_ALIGNMENT_LEFT, 580.0, 11, SyndicateSkins.secondary())
 	_draw_jobs()
 	_draw_crew()
 	draw_string(ThemeDB.fallback_font, Vector2(28.0, 1138.0), message, HORIZONTAL_ALIGNMENT_LEFT, 660.0, 11, SyndicateSkins.text())
@@ -45,10 +48,10 @@ func _draw_jobs() -> void:
 		var item_id: String = "mission_law_hack" if String(job.get("target", "")).contains("Peacekeeper") else "mission_hidden"
 		if story:
 			item_id = "score"
-		draw_texture_rect_region(skin_atlas, Rect2(rect.position + Vector2(10.0, 16.0), Vector2(92.0, 92.0)), SyndicateSkins.region(item_id))
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(112.0, 30.0), ("STORY // " if story else "") + String(job.get("title", "SCORE")).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 405.0, 15, SyndicateSkins.text())
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(112.0, 61.0), "%s • TARGET %s" % [String(job.get("sector", "Sector")), String(job.get("target", "Security"))], HORIZONTAL_ALIGNMENT_LEFT, 430.0, 10, SyndicateSkins.accent())
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(112.0, 92.0), "DIFFICULTY %d • REWARD %d CR • CARGO +%d" % [int(job.get("difficulty", 1)), int(job.get("reward", 0)), int(job.get("contraband", 1))], HORIZONTAL_ALIGNMENT_LEFT, 430.0, 10, SyndicateSkins.secondary())
+		draw_texture_rect_region(skin_atlas, Rect2(rect.position + Vector2(10.0, 12.0), Vector2(100.0, 108.0)), SyndicateSkins.region(item_id))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(118.0, 30.0), ("STORY // " if story else "") + String(job.get("title", "SCORE")).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 399.0, 15, SyndicateSkins.text())
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(118.0, 61.0), "%s • TARGET %s" % [String(job.get("sector", "Sector")), String(job.get("target", "Security"))], HORIZONTAL_ALIGNMENT_LEFT, 424.0, 10, SyndicateSkins.accent())
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(118.0, 92.0), "DIFFICULTY %d • REWARD %d CR • CARGO +%d" % [int(job.get("difficulty", 1)), int(job.get("reward", 0)), int(job.get("contraband", 1))], HORIZONTAL_ALIGNMENT_LEFT, 424.0, 10, SyndicateSkins.secondary())
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(565.0, 39.0), "%02ds" % SyndicateState.seconds_left(int(job.get("expires_at", 0))), HORIZONTAL_ALIGNMENT_CENTER, 90.0, 18, SyndicateSkins.danger())
 
 func _draw_crew() -> void:
@@ -65,12 +68,15 @@ func _draw_crew() -> void:
 		var selected: bool = selected_crew.has(id_value)
 		draw_style_box(SyndicateSkins.style_box(selected, 12, 0.95 if ready else 0.58), rect)
 		var role_item: String = SyndicateSkins.crew_item(String(member.get("role", "Enforcer")))
-		draw_texture_rect_region(skin_atlas, Rect2(rect.position + Vector2(10.0, 10.0), Vector2(116.0, 116.0)), SyndicateSkins.region(role_item))
+		draw_texture_rect_region(skin_atlas, Rect2(rect.position + Vector2(10.0, 8.0), Vector2(116.0, 136.0)), SyndicateSkins.region(role_item))
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(138.0, 37.0), String(member.get("name", "Crew")), HORIZONTAL_ALIGNMENT_LEFT, 175.0, 14, SyndicateSkins.text())
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(138.0, 66.0), "%s • L%d" % [String(member.get("role", "")), int(member.get("level", 1))], HORIZONTAL_ALIGNMENT_LEFT, 175.0, 10, SyndicateSkins.accent())
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(138.0, 94.0), "PWR %d HP %d/%d" % [int(member.get("power", 0)), int(member.get("hp", 0)), int(member.get("max_hp", 0))], HORIZONTAL_ALIGNMENT_LEFT, 180.0, 10, SyndicateSkins.text())
 		draw_string(ThemeDB.fallback_font, rect.position + Vector2(138.0, 124.0), "READY" if ready else "UNAVAILABLE", HORIZONTAL_ALIGNMENT_LEFT, 175.0, 10, SyndicateSkins.accent() if ready else SyndicateSkins.danger())
 
-func _draw_button(rect: Rect2, label: String, active: bool) -> void:
-	draw_style_box(SyndicateSkins.style_box(active, 10), rect)
+func _draw_button(rect: Rect2, label: String, _active: bool) -> void:
+	draw_texture_rect_region(skin_atlas, rect, SyndicateSkins.button_region())
+	var cover: Color = SyndicateSkins.dark()
+	cover.a = 0.78
+	draw_rect(Rect2(rect.position + Vector2(16.0, 8.0), rect.size - Vector2(32.0, 16.0)), cover, true)
 	draw_string(ThemeDB.fallback_font, rect.position + Vector2(4.0, 44.0), label, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 8.0, 11, SyndicateSkins.text())
