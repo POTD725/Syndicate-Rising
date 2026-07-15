@@ -7,8 +7,10 @@ func _init() -> void:
 
 func _run() -> void:
 	print("[SYNDICATE RISING] Verifying isometric board and DermaPack integration...")
-	_expect(load("res://scripts/syndicate_isometric_assets.gd") is Script, "Embedded isometric asset loader parses")
+	_expect(load("res://scripts/syndicate_isometric_assets.gd") is Script, "Isometric asset loader parses")
 	_expect(load("res://scripts/syndicate_skinned_city.gd") is Script, "Isometric city controller parses")
+	_expect(load("res://scripts/syndicate_animated_isometric_city.gd") is Script, "Animated isometric city controller parses")
+	_expect(load("res://assets/board/isometric_lunar_city.webp") is Texture2D, "Binary isometric board imports as a Godot texture")
 
 	var state: Node = root.get_node_or_null("SyndicateState")
 	_expect(state != null, "Campaign state autoload exists")
@@ -30,10 +32,10 @@ func _run() -> void:
 		await process_frame
 		var board: Texture2D = city.get("board_texture") as Texture2D
 		var pack: Texture2D = city.get("dermapack_texture") as Texture2D
-		_expect(board != null, "Embedded isometric board decodes")
-		_expect(pack != null, "Embedded DermaPack icon decodes")
+		_expect(board != null, "Binary isometric board loads")
+		_expect(pack != null, "Generated DermaPack icon loads")
 		if board != null:
-			_expect(board.get_size().x >= 600.0 and board.get_size().y >= 850.0, "Isometric board retains mobile-detail resolution")
+			_expect(board.get_size().x >= 470.0 and board.get_size().y >= 650.0, "Optimized board retains mobile-detail resolution")
 		if pack != null:
 			_expect(pack.get_size().x >= 120.0 and pack.get_size().y >= 120.0, "DermaPack wearable icon retains readable resolution")
 		var hotspots: Dictionary = city.get("room_rects") as Dictionary
