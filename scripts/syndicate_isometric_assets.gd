@@ -1,12 +1,7 @@
 extends RefCounted
-## Loads the approved isometric board from verified text chunks and builds the matching DermaPack icon.
+## Loads the approved binary isometric board and builds the matching DermaPack icon.
 
-const BOARD_CHUNKS: Array[String] = [
-	"res://assets/board/chunks/board_00.b64",
-	"res://assets/board/chunks/board_01.b64",
-	"res://assets/board/chunks/board_02.b64",
-	"res://assets/board/chunks/board_03.b64"
-]
+const BOARD_PATH: String = "res://assets/board/isometric_lunar_city.webp"
 
 static var _board_cache: Texture2D
 static var _dermapack_cache: Texture2D
@@ -14,19 +9,12 @@ static var _dermapack_cache: Texture2D
 static func board_texture() -> Texture2D:
 	if _board_cache != null:
 		return _board_cache
-	var encoded: String = ""
-	for path: String in BOARD_CHUNKS:
-		if not FileAccess.file_exists(path):
-			push_error("Missing isometric board chunk: %s" % path)
-			return GradientTexture2D.new()
-		encoded += FileAccess.get_file_as_string(path).strip_edges()
-	var image: Image = Image.new()
-	var error: Error = image.load_jpg_from_buffer(Marshalls.base64_to_raw(encoded))
-	if error != OK:
-		push_error("Unable to decode isometric lunar board: %s" % error_string(error))
-		return GradientTexture2D.new()
-	_board_cache = ImageTexture.create_from_image(image)
-	return _board_cache
+	var loaded: Resource = load(BOARD_PATH)
+	if loaded is Texture2D:
+		_board_cache = loaded as Texture2D
+		return _board_cache
+	push_error("Unable to load verified isometric lunar board: %s" % BOARD_PATH)
+	return GradientTexture2D.new()
 
 static func dermapack_texture() -> Texture2D:
 	if _dermapack_cache != null:
