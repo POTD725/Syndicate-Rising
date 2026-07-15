@@ -1,6 +1,7 @@
 extends SceneTree
 
-var failures := 0
+var failures: int = 0
+var state: Node
 
 func _init() -> void:
 	call_deferred("_run")
@@ -14,42 +15,52 @@ func _run() -> void:
 	_expect(load("res://scripts/syndicate_raid.gd") is Script, "Tactical raid script loads")
 	_expect(load("res://scripts/syndicate_cutscene.gd") is Script, "Cutscene script loads")
 
-	SyndicateState.reset_state()
-	_expect(SyndicateState.rooms.size() == 8, "Eight criminal buildings exist")
-	_expect(SyndicateState.crew.size() == 4, "Four starter crew members exist")
-	_expect(SyndicateState.pending_cutscene == "prologue", "New campaign starts with the prologue")
+	state = root.get_node_or_null("SyndicateState")
+	_expect(state != null, "SyndicateState autoload exists")
+	if state == null:
+		quit(1)
+		return
 
-	SyndicateState.credits = 5000
-	var repair := SyndicateState.repair_room("chop_shop")
+	state.call("reset_state")
+	var rooms_value: Variant = state.get("rooms")
+	var crew_value: Variant = state.get("crew")
+	_expect(rooms_value is Array and (rooms_value as Array).size() == 8, "Eight criminal buildings exist")
+	_expect(crew_value is Array and (crew_value as Array).size() == 4, "Four starter crew members exist")
+	_expect(String(state.get("pending_cutscene")) == "prologue", "New campaign starts with the prologue")
+
+	state.set("credits", 5000)
+	var repair: Dictionary = state.call("repair_room", "chop_shop") as Dictionary
 	_expect(bool(repair.get("ok", false)), "Damaged building can enter the rebuild queue")
-	var chop_shop := SyndicateState.get_room("chop_shop")
+	var chop_shop: Dictionary = state.call("get_room", "chop_shop") as Dictionary
 	chop_shop["repaired"] = true
 	chop_shop["repair_end"] = 0
-	var upgrade := SyndicateState.upgrade_room("chop_shop")
+	var upgrade: Dictionary = state.call("upgrade_room", "chop_shop") as Dictionary
 	_expect(bool(upgrade.get("ok", false)), "Rebuilt building can be upgraded")
 	_expect(int(chop_shop.get("level", 1)) == 2, "Upgrade raises building level")
 
-	SyndicateState.next_job_at = 0
-	SyndicateState.tick()
-	_expect(not SyndicateState.jobs.is_empty(), "Score generation produces a criminal job")
-	if not SyndicateState.jobs.is_empty():
-		var first_job := SyndicateState.jobs[0]
+	state.set("next_job_at", 0)
+	state.call("tick")
+	var jobs_value: Variant = state.get("jobs")
+	_expect(jobs_value is Array and not (jobs_value as Array).is_empty(), "Score generation produces a criminal job")
+	if jobs_value is Array and not (jobs_value as Array).is_empty():
+		var first_job: Dictionary = (jobs_value as Array)[0] as Dictionary
 		_expect(bool(first_job.get("story", false)), "Opening score is the chapter story job")
-		var launch := SyndicateState.begin_job(String(first_job.get("id", "")), ["crew_1"])
+		var selected_crew: Array[String] = ["crew_1"]
+		var launch: Dictionary = state.call("begin_job", String(first_job.get("id", "")), selected_crew) as Dictionary
 		_expect(bool(launch.get("ok", false)), "Available crew can launch a score")
-		SyndicateState.finish_job(true, {"crew_1": 80})
-		_expect(SyndicateState.story_chapter == 2, "Winning chapter one advances the story")
+		state.call("finish_job", true, {"crew_1": 80})
+		_expect(int(state.get("story_chapter")) == 2, "Winning chapter one advances the story")
 
-	var scene_paths := [
+	var scene_paths: Array[String] = [
 		"res://scenes/SyndicateCity.tscn",
 		"res://scenes/SyndicateScores.tscn",
 		"res://scenes/SyndicateRaid.tscn",
 		"res://scenes/SyndicateCutscene.tscn"
 	]
-	for path in scene_paths:
-		_expect(load(path) is PackedScene, "Scene parses: %s" % String(path).get_file())
+	for path: String in scene_paths:
+		_expect(load(path) is PackedScene, "Scene parses: %s" % path.get_file())
 
-	var art_paths := [
+	var art_paths: Array[String] = [
 		"res://assets/syndicate_emblem.svg",
 		"res://assets/buildings/backroom_command.svg",
 		"res://assets/buildings/chop_shop.svg",
@@ -68,14 +79,14 @@ func _run() -> void:
 		"res://assets/cutscenes/ghost_key_network.svg",
 		"res://assets/cutscenes/take_back_dark.svg"
 	]
-	for path in art_paths:
-		_expect(load(path) is Texture2D, "Artwork imports: %s" % String(path).get_file())
+	for path: String in art_paths:
+		_expect(load(path) is Texture2D, "Artwork imports: %s" % path.get_file())
 
-	SyndicateState.intro_seen = true
-	SyndicateState.pending_cutscene = ""
-	var city_scene := load("res://scenes/SyndicateCity.tscn") as PackedScene
+	state.set("intro_seen", true)
+	state.set("pending_cutscene", "")
+	var city_scene: PackedScene = load("res://scenes/SyndicateCity.tscn") as PackedScene
 	if city_scene != null:
-		var city := city_scene.instantiate()
+		var city: Node = city_scene.instantiate()
 		root.add_child(city)
 		await process_frame
 		await process_frame
