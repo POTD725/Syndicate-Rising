@@ -63,25 +63,6 @@ jobs:
           test -f exports/web/index.wasm
           test -f exports/web/index.pck
           touch exports/web/.nojekyll
-
-          VERSIONED_PCK="index-${GITHUB_SHA}.pck"
-          mv exports/web/index.pck "exports/web/${VERSIONED_PCK}"
-          python3 - "exports/web/index.html" "${VERSIONED_PCK}" <<'PY'
-          import pathlib
-          import sys
-
-          html_path = pathlib.Path(sys.argv[1])
-          versioned_pck = sys.argv[2]
-          html = html_path.read_text(encoding="utf-8")
-          old = '"mainPack":"index.pck"'
-          new = f'"mainPack":"{versioned_pck}"'
-          if old not in html:
-              raise SystemExit("Godot mainPack entry was not found in exported HTML")
-          html_path.write_text(html.replace(old, new, 1), encoding="utf-8")
-          PY
-
-          test -f "exports/web/${VERSIONED_PCK}"
-          grep -Fq "\"mainPack\":\"${VERSIONED_PCK}\"" exports/web/index.html
           ls -lh exports/web
 
       - name: Upload downloadable browser build
