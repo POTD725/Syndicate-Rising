@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1280" viewBox="0 0 720 1280">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#030712"/><stop offset=".55" stop-color="#17233d"/><stop offset="1" stop-color="#3b2a3d"/></linearGradient>
+ <linearGradient id="moon" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7c8797"/><stop offset="1" stop-color="#2b303a"/></linearGradient>
+ <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff29a"/><stop offset=".45" stop-color="#ff8d45"/><stop offset="1" stop-color="#7f1735" stop-opacity="0"/></linearGradient>
+ <filter id="g"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="720" height="1280" fill="url(#sky)"/>
+<g fill="#b8d8ff" opacity=".55"><circle cx="59" cy="89" r="2"/><circle cx="139" cy="56" r="1.5"/><circle cx="225" cy="114" r="2"/><circle cx="325" cy="64" r="1"/><circle cx="425" cy="99" r="2"/><circle cx="536" cy="48" r="1.5"/><circle cx="652" cy="111" r="2"/></g>
+<circle cx="600" cy="186" r="102" fill="#213653"/><circle cx="568" cy="156" r="71" fill="#334d70"/><circle cx="542" cy="135" r="13" fill="#15243a"/><circle cx="619" cy="209" r="20" fill="#17273c"/>
+<g transform="translate(170 135)">
+ <path d="M0 52h225" stroke="#79e6ff" stroke-width="7"/>
+ <rect x="56" y="27" width="112" height="50" rx="20" fill="#1e334d" stroke="#a8e8ff" stroke-width="4"/>
+ <circle cx="112" cy="52" r="19" fill="#4e7594"/><circle cx="112" cy="52" r="9" fill="#6ceaff" filter="url(#g)"/>
+ <path d="M40 40L3 23M185 40l37-17" stroke="#6787a2" stroke-width="13"/>
+ <circle cx="112" cy="4" r="6" fill="#ff617d"/>
+</g>
+<path d="M0 541L94 484l78 35 86-94 86 59 105-70 97 60 89-45 85 51v800H0z" fill="url(#moon)"/>
+<g opacity=".7" fill="#232935"><ellipse cx="103" cy="566" rx="74" ry="22"/><ellipse cx="388" cy="532" rx="92" ry="28"/><ellipse cx="608" cy="592" rx="65" ry="20"/></g>
+<g transform="translate(35 370)">
+ <path d="M24 196h173l-14-96-41-33-54 10-47 44z" fill="#263746" stroke="#6e8295" stroke-width="5"/>
+ <rect x="71" y="121" width="76" height="75" fill="#101a25" stroke="#5ae5ff" stroke-width="4"/>
+ <path d="M24 196l-17 44h214l-24-44" fill="#19222e"/>
+ <path d="M43 121l25-52h95l31 47" fill="none" stroke="#9aa9b8" stroke-width="7"/>
+ <path d="M75 143h67M75 162h52" stroke="#ff6d88" stroke-width="5"/>
+</g>
+<g transform="translate(447 393)">
+ <path d="M27 174h189l-19-91-61-49-69 19-43 55z" fill="#313944" stroke="#7d8793" stroke-width="5"/>
+ <path d="M67 53l28 44 35-69 38 55" fill="none" stroke="#ff7357" stroke-width="11" filter="url(#g)"/>
+ <rect x="78" y="111" width="86" height="63" fill="#111820" stroke="#ffb25c" stroke-width="4"/>
+ <path d="M31 173l-20 45h221l-16-45" fill="#1a2029"/>
+</g>
+<g opacity=".85" filter="url(#g)"><path d="M453 549q22-93 48-14q31-115 61-8q25-75 49 0v87H453z" fill="url(#fire)"/><path d="M74 559q20-76 42-11q27-86 49-3q22-64 43 3v68H74z" fill="url(#fire)"/></g>
+<g transform="translate(179 606)">
+ <g fill="#111b27" stroke="#91d8ee" stroke-width="4">
+  <path d="M15 164l22-94 38-31 42 28 16 97z"/><path d="M126 164l22-104 39-35 45 33 18 106z"/><path d="M254 164l20-91 36-29 39 25 16 95z"/><path d="M368 164l22-99 39-31 43 31 17 99z"/>
+ </g>
+ <g fill="#5fe8ff" filter="url(#g)"><path d="M47 75h35v9H47z"/><path d="M159 63h39v10h-39z"/><path d="M284 77h35v9h-35z"/><path d="M399 68h38v10h-38z"/></g>
+ <g fill="#ffbf6c"><circle cx="65" cy="110" r="8"/><circle cx="179" cy="101" r="8"/><circle cx="302" cy="112" r="8"/><circle cx="418" cy="105" r="8"/></g>
+</g>
+<path d="M96 824h528l55 82-55 87H96l-55-87z" fill="#090e18" stroke="#67e6ff" stroke-width="4" opacity=".94"/>
+<text x="360" y="878" text-anchor="middle" font-family="sans-serif" font-size="26" font-weight="900" fill="#f6fbff">THE NIGHT THE CRATER FELL</text>
+<text x="360" y="917" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#a9ddec">THE PEACEKEEPERS RAIDED CRATER MARKET FROM ORBIT</text>
+<text x="360" y="949" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#cfb3db">FOUR MOONGOONS ESCAPED BELOW THE RUBBLE</text>
+<path d="M75 1030h570" stroke="#ffbe67" stroke-width="3" stroke-dasharray="14 9"/>
+<text x="360" y="1080" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="800" fill="#ffce7a">YOUR FIRST ORDER CREATED THE SYNDICATE</text>
+<text x="360" y="1120" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#b7c8d8">RESCUE THE CREW • SALVAGE THE WRECKAGE • STEAL AUTHORITY CODES</text>
+</svg>
