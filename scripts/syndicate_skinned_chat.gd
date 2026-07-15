@@ -1,14 +1,24 @@
 extends "res://scripts/syndicate_chat.gd"
-## Skins the complete communications interface and its three channel icons.
+## Uses the exact displayed concept-board UI frame and mission-channel artwork.
 
 var skin_atlas: Texture2D
 var skin_button: Button
+var header_art: TextureRect
 
 func _ready() -> void:
 	super._ready()
 	skin_atlas = SyndicateSkins.atlas()
+	header_art = TextureRect.new()
+	header_art.name = "ActualConceptHeader"
+	header_art.position = Vector2(110.0, 6.0)
+	header_art.size = Vector2(486.0, 82.0)
+	header_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	header_art.stretch_mode = TextureRect.STRETCH_SCALE
+	header_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(header_art)
+	move_child(header_art, 2)
 	skin_button = Button.new()
-	skin_button.text = "SKIN"
+	skin_button.text = "ART"
 	skin_button.position = Vector2(604.0, 18.0)
 	skin_button.size = Vector2(98.0, 56.0)
 	skin_button.pressed.connect(_cycle_skin)
@@ -19,13 +29,15 @@ func _ready() -> void:
 
 func _cycle_skin() -> void:
 	SyndicateSkins.cycle_skin()
-	feedback_label.text = "Communications skin changed to %s." % SyndicateSkins.skin_name()
+	feedback_label.text = "Displayed communications artwork changed to %s." % SyndicateSkins.skin_name()
 
 func _on_skin_changed(_index: int) -> void:
 	skin_atlas = SyndicateSkins.atlas()
 	_apply_skin()
 
 func _apply_skin() -> void:
+	header_art.texture = _atlas_region(SyndicateSkins.ui_frame_region())
+	header_art.modulate = Color(1.0, 1.0, 1.0, 0.44)
 	var color_rects: Array[ColorRect] = []
 	_collect_color_rects(self, color_rects)
 	for index: int in range(color_rects.size()):
@@ -49,9 +61,12 @@ func _apply_skin() -> void:
 	queue_redraw()
 
 func _atlas_icon(item_id: String) -> AtlasTexture:
+	return _atlas_region(SyndicateSkins.region(item_id))
+
+func _atlas_region(region_rect: Rect2) -> AtlasTexture:
 	var texture: AtlasTexture = AtlasTexture.new()
 	texture.atlas = skin_atlas
-	texture.region = SyndicateSkins.region(item_id)
+	texture.region = region_rect
 	return texture
 
 func _kind_color(kind: String) -> Color:
