@@ -1,0 +1,14 @@
+.godot/
+.import/
+exports/
+build/
+logs/
+*.apk
+*.aab
+*.zip
+*.keystore
+*.pck
+*.wasm
+*.log
+.DS_Store
+Thumbs.db

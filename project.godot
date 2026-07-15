@@ -1,0 +1,35 @@
+; MoonGoons: Syndicate Rising
+; Standalone Godot 4 project
+config_version=5
+
+[application]
+config/name="MoonGoons: Syndicate Rising"
+config/version="0.1.0-standalone"
+run/main_scene="res://scenes/SyndicateCity.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://assets/syndicate_emblem.svg"
+
+[autoload]
+SyndicateState="*res://scripts/syndicate_state.gd"
+SyndicateAudio="*res://scripts/syndicate_audio.gd"
+
+[display]
+
+[display/window]
+size/viewport_width=720
+size/viewport_height=1280
+size/window_width_override=540
+size/window_height_override=960
+stretch/mode="canvas_items"
+stretch/aspect="keep"
+handheld/orientation=1
+
+[input_devices]
+pointing/emulate_mouse_from_touch=true
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/vram_compression/import_etc2_astc=true
