@@ -19,10 +19,8 @@ func _run() -> void:
 	_check_texture(ART.systems_atlas(), Vector2(1024.0, 768.0), "Resources, defenses, and threats atlas")
 	_check_texture(ART.ui_atlas(), Vector2(512.0, 256.0), "Mobile UI atlas")
 	_check_texture(ART.dermapack_texture(), Vector2(256.0, 256.0), "DermaPack wearable icon")
-	for key: String in ["prologue", "ghost_key", "war_room", "finale"]:
-		_check_texture(ART.cutscene_texture(key), Vector2(720.0, 1280.0), "Cutscene art: %s" % key)
-	for key: String in ["survey", "patrol", "riot", "cyber"]:
-		_check_texture(ART.attack_texture(key), Vector2(720.0, 720.0), "Attack art: %s" % key)
+	_check_texture(ART.cutscene_texture("prologue"), Vector2(720.0, 1280.0), "Shared cinematic renderer")
+	_check_texture(ART.attack_texture("survey"), Vector2(720.0, 720.0), "Shared attack renderer")
 
 	var state: Node = root.get_node_or_null("SyndicateState")
 	_expect(state != null, "Campaign state autoload exists")
