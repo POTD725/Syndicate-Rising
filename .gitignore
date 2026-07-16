@@ -3,6 +3,12 @@
 exports/
 build/
 logs/
+.ci/approved-dashboard-source.png
+assets/approved/*.webp
+assets/approved/*.png
+assets/approved/*.json
+assets/approved/attacks/
+assets/approved/cutscenes/
 *.apk
 *.aab
 *.zip
