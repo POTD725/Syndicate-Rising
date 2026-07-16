@@ -10,6 +10,9 @@ func _ready() -> void:
 	super._ready()
 	full_scene_texture = ART_LIBRARY.cutscene_texture(key)
 
+func uses_isometric_board() -> bool:
+	return full_scene_texture != null and full_scene_texture.get_size().x >= 720.0
+
 func _process(delta: float) -> void:
 	cinematic_elapsed += delta
 	queue_redraw()
