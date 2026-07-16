@@ -1,16 +1,31 @@
 extends "res://scripts/syndicate_full_city.gd"
-## Keeps established compatibility controls and exposes the living workforce for tests.
+## Approved production city wrapper. It preserves all gameplay, camera, rotation,
+## worker, and compatibility hooks while replacing every procedural texture.
+
+const APPROVED_ART: Script = preload("res://scripts/syndicate_approved_art.gd")
 
 var npc_jobs: Array[Dictionary] = []
 
 func _ready() -> void:
 	super._ready()
+	board_texture = APPROVED_ART.board_texture()
+	npc_atlas = APPROVED_ART.npc_atlas()
+	ui_atlas = APPROVED_ART.ui_atlas()
+	dermapack_texture = APPROVED_ART.dermapack_texture()
 	button_rects["skin"] = Rect2(329.0, 104.0, 86.0, 38.0)
 	npc_jobs = worker_jobs.duplicate(true)
 	var tools: Array[String] = ["terminal", "research", "guard", "rifle", "welder", "medical", "cargo", "mining", "courier", "hacking", "training", "maintenance"]
 	for index: int in range(npc_jobs.size()):
 		npc_jobs[index]["room"] = ROOM_IDS[index % ROOM_IDS.size()]
 		npc_jobs[index]["tool"] = tools[index % tools.size()]
+	message = "Approved lunar district loaded: 32 MoonGoons are working across the base."
+	queue_redraw()
+
+func approved_graphics_active() -> bool:
+	return APPROVED_ART.approved_graphics_active()
+
+func graphics_receipt() -> Dictionary:
+	return APPROVED_ART.graphics_receipt()
 
 func npc_job_count() -> int:
 	return npc_jobs.size()
@@ -28,7 +43,7 @@ func every_npc_has_job() -> bool:
 func _action(action: String) -> void:
 	if action == "skin":
 		SyndicateSkins.cycle_skin()
-		message = "Interface family changed to %s. The full isometric city remains active." % SyndicateSkins.skin_name()
+		message = "Dashboard trim changed to %s. Approved city graphics remain active." % SyndicateSkins.skin_name()
 		SyndicateAudio.play_sfx("click")
 		queue_redraw()
 		return
