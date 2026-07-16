@@ -9,6 +9,9 @@ func _ready() -> void:
 	super._ready()
 	full_attack_texture = ART_LIBRARY.attack_texture(threat_type)
 
+func uses_isometric_board() -> bool:
+	return full_attack_texture != null and full_attack_texture.get_size().x >= 720.0
+
 func _draw_attack_art() -> void:
 	if full_attack_texture == null:
 		full_attack_texture = ART_LIBRARY.attack_texture(threat_type)
@@ -40,7 +43,7 @@ func _draw_attack_motion() -> void:
 				draw_rect(Rect2(42.0, y, 636.0, 3.0), Color(1.0, 0.20, 0.48, 0.09 + float(index % 4) * 0.04), true)
 			for node_index: int in range(7):
 				var x: float = 100.0 + float(node_index % 4) * 172.0
-				var y: float = 245.0 + float(node_index / 4) * 205.0
+				var y: float = 245.0 + float(int(node_index / 4)) * 205.0
 				draw_circle(Vector2(x, y), 12.0 + sin(elapsed * 2.0 + float(node_index)) * 3.0, Color("e6539b"))
 				draw_line(Vector2(x, y), Vector2(360.0, 420.0), Color(0.30, 0.91, 1.0, 0.34), 2.0)
 
