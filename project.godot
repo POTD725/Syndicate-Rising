@@ -4,7 +4,7 @@ config_version=5
 
 [application]
 config/name="MoonGoons: Syndicate Rising"
-config/version="0.6.0-isometric-dermapack"
+config/version="0.7.0-full-isometric-art"
 run/main_scene="res://scenes/SyndicateCity.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://assets/syndicate_emblem.svg"
