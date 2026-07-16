@@ -13,7 +13,8 @@ func _run() -> void:
 	var receipt: Dictionary = ART.graphics_receipt()
 	_expect(String(receipt.get("status", "")) == "approved", "Graphics receipt marks the pack approved")
 	_expect(String(receipt.get("source_sha256", "")) == EXPECTED_SHA, "Approved dashboard source checksum matches")
-	_expect((receipt.get("source_size", []) as Array) == [1536, 1024], "Approved source dimensions match")
+	var source_size: Array = receipt.get("source_size", []) as Array
+	_expect(source_size.size() == 2 and int(source_size[0]) == 1536 and int(source_size[1]) == 1024, "Approved source dimensions match")
 
 	_check_texture(ART.board_texture(), Vector2(1024.0, 1536.0), "Portrait lunar city board")
 	_check_texture(ART.npc_atlas(), Vector2(1024.0, 256.0), "Animated NPC atlas")
@@ -24,6 +25,17 @@ func _run() -> void:
 		_check_texture(ART.cutscene_texture(key), Vector2(720.0, 1280.0), "Approved cutscene: %s" % key)
 	for key: String in ["survey", "patrol", "riot", "cyber"]:
 		_check_texture(ART.attack_texture(key), Vector2(720.0, 720.0), "Approved attack: %s" % key)
+
+	for script_path: String in [
+		"res://scripts/syndicate_full_city_compat.gd",
+		"res://scripts/syndicate_approved_operations.gd",
+		"res://scripts/syndicate_approved_scores.gd",
+		"res://scripts/syndicate_approved_raid.gd",
+		"res://scripts/syndicate_approved_chat.gd",
+		"res://scripts/syndicate_approved_cutscene.gd",
+		"res://scripts/syndicate_approved_attack_cutscene.gd"
+	]:
+		_expect(load(script_path) is Script, "Approved controller parses: %s" % script_path.get_file())
 
 	var state: Node = root.get_node_or_null("SyndicateState")
 	_expect(state != null, "Campaign state exists")
@@ -36,8 +48,7 @@ func _run() -> void:
 	state.set("pending_attack_cutscene", "")
 	state.set("active_threat", {})
 
-	var city_scene: PackedScene = load("res://scenes/SyndicateCity.tscn") as PackedScene
-	var city: Node = city_scene.instantiate()
+	var city: Node = (load("res://scenes/SyndicateCity.tscn") as PackedScene).instantiate()
 	root.add_child(city)
 	await process_frame
 	await process_frame
@@ -59,6 +70,20 @@ func _run() -> void:
 	await process_frame
 	_expect(operations.has_method("approved_graphics_active") and bool(operations.call("approved_graphics_active")), "Operations uses approved resources and defense graphics")
 	operations.queue_free()
+	await process_frame
+
+	var scores: Node = (load("res://scenes/SyndicateScores.tscn") as PackedScene).instantiate()
+	root.add_child(scores)
+	await process_frame
+	_expect(scores.has_method("approved_graphics_active") and bool(scores.call("approved_graphics_active")), "Mission board uses approved graphics")
+	scores.queue_free()
+	await process_frame
+
+	var chat: Node = (load("res://scenes/SyndicateChat.tscn") as PackedScene).instantiate()
+	root.add_child(chat)
+	await process_frame
+	_expect(chat.has_method("approved_graphics_active") and bool(chat.call("approved_graphics_active")), "Galaxy, Alliance, and Private chat use approved graphics")
+	chat.queue_free()
 	await process_frame
 
 	state.set("pending_cutscene", "prologue")
